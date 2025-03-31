@@ -2,7 +2,8 @@ body {
     background-color: rgb(33, 28, 132);
 }
 
-html, body {
+html,
+body {
     overflow: hidden;
     height: 100%;
     margin: 0;
@@ -51,8 +52,9 @@ p {
 .mainContainer {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centers content vertically */
-    
+    justify-content: center;
+    /* Centers content vertically */
+
     position: fixed;
     top: 0;
     left: 0;
@@ -74,15 +76,27 @@ p {
 .customLink {
     color: rgb(170, 175, 236);
     text-decoration: none;
-    text-wrap: wrap;
     font-family: "Raleway";
     text-align: center;
     font-size: clamp(12px, 2vw, 20px);
     font-weight: 400;
+    position: relative;
 }
 
-.customLink:hover {
-    color: rgb(92, 101, 205);
+.customLink::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -2.5px; 
+    width: 0%;
+    height: 1.75px;
+    background-color: rgb(170, 175, 236);
+    transition: width 1s cubic-bezier(0.25, 1, 0.5, 1), left 1s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.customLink:hover::after {
+    width: calc(100% + 6px); 
+    left: -3px; 
 }
 
 .mainButtonsContainer {
@@ -96,8 +110,8 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
-    
-    border: 1px solid rgb(170, 175, 236);
+
+    border: 1px solid rgb(189, 194, 247);
     height: 6.5vh;
     width: 12vw;
 
@@ -122,8 +136,7 @@ p {
 
 .codeImage {
     opacity: 0.65;
-    transform: scale(0.633);
-    transform-origin: top left; /* Makes it scale from the top-left */
+    height: 101vh;
 }
 
 .navbarContainer {
@@ -152,12 +165,10 @@ p {
     text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.18);
 }
 
-.underlineOnOpen {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 7px;
-}
-
 .removeBorder {
     border: none;
+}
+
+.bold {
+    color: rgb(213, 196, 255);
 }
