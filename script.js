@@ -1,99 +1,107 @@
-// backend security
-
-(function() {
-    function _a(b) { return b.split("").reverse().join(""); }
-    function _b() { return Math.random().toString(36).substr(2, 10); }
-    function _c(d, e) { return !!(d && e); }
-    function _d(f) {
-        let g = 42;
-        return btoa(f.split('').map(h => String.fromCharCode(h.charCodeAt(0) ^ g)).join(''));
-    }
-    function _e(i) {
-        let j = 42;
-        return atob(i).split('').map(k => String.fromCharCode(k.charCodeAt(0) ^ j)).join('');
-    }
-    function _f() {
-        setInterval(() => {
-            if (window.console && (window.outerHeight - window.innerHeight) > 200) {
-                document.body.innerHTML = "";
-                alert("Error: Unauthorized access detected.");
-            }
-        }, 1000);
-    }
-    function _g() {
-        let l = _d(atob("aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj14dkZaam81UGdHMA=="));
-        let m = _a(l);
-        if (_c(m, l) && _b()) {
-            setTimeout(() => { window.location.href = _e(l); }, Math.random() * 2000 + 500);
+document.addEventListener('DOMContentLoaded', function() {
+    // Project click handling
+    const projects = document.querySelectorAll('.project');
+    const ANIMATION_DURATION = 600; // 600ms (0.6s) to match our CSS transition
+    
+    projects.forEach(project => {
+      // Add click event to the entire project box
+      project.addEventListener('click', function(e) {
+        // Prevent clicks inside project-details from triggering the toggle
+        if (e.target.closest('.project-details') && !e.target.closest('.project-header')) {
+          return;
         }
-    }
-    document.addEventListener("DOMContentLoaded", () => {
-        console.log("Initializing system...");
-        console.log("Session ID: " + _b());
-        _f();
-        _g();
-
-        const mainContent = document.querySelector('.mainContainer');
-        const navbar = document.querySelector('.navbarContainer');
-        const codeImage = document.querySelector('.codeImageDiv');
-
-        mainContent.style.opacity = '0';
-        navbar.style.opacity = '0';
-        codeImage.style.opacity = '0';
-
-        setTimeout(() => {
-            mainContent.style.transition = 'opacity 2s ease-in';
-            navbar.style.transition = 'opacity 2s ease-in';
-            codeImage.style.transition = 'opacity 2s ease-in';
-            mainContent.style.opacity = '1';
-            navbar.style.opacity = '1';
-            codeImage.style.opacity = '1';
-        }, 500);
-
-        const title = document.querySelector('.mainTextContainer h1');
-        const titleParts = title.querySelectorAll('span');
         
-        titleParts.forEach((part, index) => {
-            part.style.transform = 'translateY(30px)';
-            part.style.opacity = '0';
-            part.style.transition = `transform 1s ease-out, opacity 1s ease-out ${index * 0.5}s`;
-
-            setTimeout(() => {
-                part.style.transform = 'translateY(0)';
-                part.style.opacity = '1';
-            }, 500);
-        });
-
-
-        const navLinks = document.querySelectorAll('.navbarButton a');
+        // Check if this project is already active
+        const isActive = project.classList.contains('active');
+        
+        if (isActive) {
+          // If active, just close this project
+          closeProject(project);
+        } else {
+          // Get currently active project (if any)
+          const activeProject = document.querySelector('.project.active');
+          
+          // Start closing animation on active project (if it exists)
+          if (activeProject) {
+            closeProject(activeProject);
+          }
+          
+          // Immediately start opening the clicked project (don't wait)
+          openProject(project);
+        }
+      });
+    });
+    
+    // Function to close project with animation
+    function closeProject(project) {
+      const details = project.querySelector('.project-details');
+      const dropdownIcon = project.querySelector('.dropdown-icon');
+      
+      // Start the closing animation
+      details.classList.remove('active');
+      dropdownIcon.classList.remove('active');
+      
+      // Wait for animation to complete before fully closing
+      setTimeout(() => {
+        project.classList.remove('active');
+      }, ANIMATION_DURATION);
+    }
+  
+    // Function to open project with animation
+    function openProject(project) {
+      project.classList.add('active');
+      project.querySelector('.project-details').classList.add('active');
+      project.querySelector('.dropdown-icon').classList.add('active');
+    }
+  
+    // Fade-in on scroll effect for sections
+    const sections = document.querySelectorAll('section');
+  
+    const fadeInOnScroll = () => {
+      sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (sectionTop < windowHeight * 0.8) {
+          section.style.opacity = '1';
+          section.style.transform = 'translateY(0)';
+        }
+      });
+    };
+  
+    // Set initial state for fade-in effect
+    sections.forEach(section => {
+      section.style.opacity = '0';
+      section.style.transform = 'translateY(20px)';
+      section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    });
+  
+    // Run fade-in effect once on load
+    fadeInOnScroll();
+    
+    // Run fade-in effect on scroll
+    window.addEventListener('scroll', fadeInOnScroll);
+  
+    // Function to set the active page link in the navbar
+    const setActivePage = () => {
+        const currentPage = window.location.pathname.split("/").pop() || "index.html";
+        const navLinks = document.querySelectorAll("nav ul li a");
+        
+        console.log("Current page:", currentPage); // Add this for debugging
         
         navLinks.forEach(link => {
-            link.style.transition = 'color 0.3s ease, transform 0.3s ease';
-            
-            link.addEventListener('mouseenter', () => {
-                link.style.color = '#FF5733';
-                link.style.transform = 'scale(1.1)';
-            });
-            
-            link.addEventListener('mouseleave', () => {
-                link.style.color = '';
-                link.style.transform = 'scale(1)';
-            });
+          link.classList.remove("active");
+          
+          const linkHref = link.getAttribute("href");
+          console.log("Checking link:", linkHref); // Add this for debugging
+          
+          // Check if the href matches the current page or ends with the current page
+          if (linkHref === currentPage || linkHref.endsWith("/" + currentPage)) {
+            link.classList.add("active");
+          }
         });
-
-
-        const introText = document.querySelector('.mainTextContainer p');
-        const typingText = introText.innerHTML.split('').map(char => `<span>${char}</span>`).join('');
-        introText.innerHTML = typingText;
-
-        const spans = introText.querySelectorAll('span');
-        spans.forEach((span, index) => {
-            span.style.opacity = '0';
-            span.style.transition = `opacity 0.1s ease-in-out ${index * 0.05}s`;
-
-            setTimeout(() => {
-                span.style.opacity = '1';
-            }, 500);
-        });
-    });
-})();
+      };
+    
+    // Set active page on load
+    setActivePage();
+  });
